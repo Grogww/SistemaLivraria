@@ -58,7 +58,7 @@ class LivrosController {
 
             // Adiciona caminho da capa se arquivo foi enviado
             if (req.file) {
-                livroData.capaPath = req.file.path.replace(/\\/g, '/'); // Normaliza para forward slash
+                livroData.capaPath = req.file.filename; 
             }
 
             const novoLivro = await this.livrosRepository.create(livroData);
@@ -84,7 +84,7 @@ class LivrosController {
 
             // Atualiza capa se novo arquivo foi enviado
             if (req.file) {
-                livroData.capaPath = req.file.path.replace(/\\/g, '/');
+                livroData.capaPath = req.file.filename;
             }
 
             const livroAtualizado = await this.livrosRepository.update(id, livroData);

@@ -9,7 +9,7 @@ class LivrosRepository extends RepositoryBase {
     }
 
     async findAll() {
-        const rows = db.all("SELECT id, titulo, autor, categoria, ano FROM livros ORDER BY id ASC");
+        const rows = db.all("SELECT id, titulo, autor, categoria, ano, capaPath FROM livros ORDER BY id ASC");
         return rows.map(row => Livro.fromJSON(row));
     }
 
@@ -19,8 +19,7 @@ class LivrosRepository extends RepositoryBase {
         const validIds = ids.filter(id => Number.isInteger(id) && id > 0);
         if (validIds.length === 0) return [];
         
-        // ✅ Prepared statement - NÃO usa IN
-        let query = 'SELECT id, titulo, autor, categoria, ano FROM livros WHERE ';
+        let query = 'SELECT id, titulo, autor, categoria, ano, capaPath FROM livros WHERE ';
         query += validIds.map(() => 'id = ?').join(' OR ');
         query += ' ORDER BY id ASC';
         
@@ -32,15 +31,18 @@ class LivrosRepository extends RepositoryBase {
     }
 
     async findById(id) {
-        const row = db.get("SELECT id, titulo, autor, categoria, ano FROM livros WHERE id = ?", [id]);
+        const row = db.get("SELECT id, titulo, autor, categoria, ano, capaPath FROM livros WHERE id = ?", [id]);
         return row ? Livro.fromJSON(row) : null;
     }
 
     async create(livroData) {
         const novoLivro = new Livro({ id: null, ...livroData });
+        
+        // ✅ Inclui capaPath se presente
+        const capaPath = novoLivro.capaPath || null;
         const result = db.run(
-            "INSERT INTO livros (titulo, autor, categoria, ano) VALUES (?, ?, ?, ?)",
-            [novoLivro.titulo, novoLivro.autor, novoLivro.categoria, novoLivro.ano]
+            "INSERT INTO livros (titulo, autor, categoria, ano, capaPath) VALUES (?, ?, ?, ?, ?)",
+            [novoLivro.titulo, novoLivro.autor, novoLivro.categoria, novoLivro.ano, capaPath]
         );
         return this.findById(result.lastInsertRowid);
     }
@@ -52,16 +54,20 @@ class LivrosRepository extends RepositoryBase {
             error.statusCode = 404;
             throw error;
         }
+        
         const atualizado = new Livro({ ...existente.toJSON(), ...dadosAtualizados });
+        
+        // ✅ Inclui capaPath se presente (mantém null se não enviado)
+        const capaPath = atualizado.capaPath || null;
         db.run(
-            "UPDATE livros SET titulo = ?, autor = ?, categoria = ?, ano = ? WHERE id = ?",
-            [atualizado.titulo, atualizado.autor, atualizado.categoria, atualizado.ano, id]
+            "UPDATE livros SET titulo = ?, autor = ?, categoria = ?, ano = ?, capaPath = ? WHERE id = ?",
+            [atualizado.titulo, atualizado.autor, atualizado.categoria, atualizado.ano, capaPath, id]
         );
         return this.findById(id);
     }
 
     async delete(id) {
-        const existente = this.findById(id);
+        const existente = await this.findById(id); // ← Corrigido: await
         if (!existente) {
             const error = new Error("Livro não encontrado");
             error.statusCode = 404;
