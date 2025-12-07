@@ -3,9 +3,9 @@ class Favorito {
     constructor({ IDFavorito = null, IDLivro, IDUsuario, created_at = null }) {
         console.log(IDLivro, IDUsuario);
 
-        this.idFavorito = IDFavorito !== undefined ? IDFavorito : null;
-        this.idLivro = Number(IDLivro);
-        this.idUsuario = Number(IDUsuario);
+        this.IDFavorito = IDFavorito !== undefined ? IDFavorito : null;
+        this.IDLivro = Number(IDLivro);
+        this.IDUsuario = Number(IDUsuario);
         this.created_at = created_at || null;
 
         this._validar();
@@ -13,18 +13,18 @@ class Favorito {
 
     static fromJSON(json) {
         return new Favorito({
-            idFavorito: json.idFavorito ?? json.IDFavorito ?? null,
-            idLivro: json.idLivro ?? json.IDLivro,
-            idUsuario: json.idUsuario ?? json.IDUsuario,
+            IDFavorito: json.IDFavorito ?? json.IDFavorito ?? null,
+            IDLivro: json.IDLivro ?? json.IDLivro,
+            IDUsuario: json.IDUsuario ?? json.IDUsuario,
             created_at: json.created_at ?? json.createdAt ?? null
         });
     }
 
     toJSON() {
         return {
-            IDFavorito: this.idFavorito,
-            IDLivro: this.idLivro,
-            IDUsuario: this.idUsuario,
+            IDFavorito: this.IDFavorito,
+            IDLivro: this.IDLivro,
+            IDUsuario: this.IDUsuario,
             created_at: this.created_at
         };
     }
@@ -32,11 +32,11 @@ class Favorito {
     _validar() {
         const erros = [];
 
-        if (!Number.isInteger(this.idLivro) || isNaN(this.idLivro)) {
+        if (!Number.isInteger(this.IDLivro) || isNaN(this.IDLivro)) {
             erros.push("IDLivro deve ser um número válido");
         }
 
-        if (!Number.isInteger(this.idUsuario) || isNaN(this.idUsuario)) {
+        if (!Number.isInteger(this.IDUsuario) || isNaN(this.IDUsuario)) {
             erros.push("IDUsuario deve ser um número válido");
         }
 

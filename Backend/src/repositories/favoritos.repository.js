@@ -8,8 +8,8 @@ class FavoritosRepository extends RepositoryBase {
         super();
     }
 
-    async findAll(idUsuario) {
-        const rows = db.all("SELECT IDFavorito, IDLivro, IDUsuario, created_at FROM Favoritos WHERE IDUsuario = ? ORDER BY IDFavorito ASC", [idUsuario]);
+    async findAll(IDUsuario) {
+        const rows = db.all("SELECT IDFavorito, IDLivro, IDUsuario, created_at FROM Favoritos WHERE IDUsuario = ? ORDER BY IDFavorito ASC", [IDUsuario]);
         return rows.map(row => Favorito.fromJSON(row));
     }
 
@@ -20,9 +20,10 @@ class FavoritosRepository extends RepositoryBase {
 
     async create(favoritoData) {
         const novoFavorito = new Favorito({ IDFavorito: null, ...favoritoData });
+        console.log(novoFavorito);
         const result = db.run(
             "INSERT INTO Favoritos (IDLivro, IDUsuario) VALUES (?, ?)",
-            [novoFavorito.idLivro, novoFavorito.idUsuario]
+            [novoFavorito.IDLivro, novoFavorito.IDUsuario]
         );
         return this.findById(result.lastInsertRowid);
     }
@@ -34,7 +35,7 @@ class FavoritosRepository extends RepositoryBase {
             error.statusCode = 404;
             throw error;
         }
-        db.run("DELETE FROM Favorito WHERE IDFavorito = ?", [id]);
+        db.run("DELETE FROM Favoritos WHERE IDFavorito = ?", [id]);
         return existente;
     }
 }

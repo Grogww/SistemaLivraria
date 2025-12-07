@@ -13,8 +13,8 @@ export const favoritosService = {
     return response.data;
   },
 
-  async deletar(id) {
-    const response = await api.delete(`/favoritos/${id}`);
+  async deletar(IDLivro, IDUsuario) {
+    const response = await api.delete(`/favoritos/${IDLivro}?IDUsuario=${IDUsuario}`);
     return response.data;
   }
 };

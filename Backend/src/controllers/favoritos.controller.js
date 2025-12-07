@@ -6,7 +6,9 @@ class FavoritosController {
     }
 
     async listarFavoritos(req, res, next) {
-        const favoritos = await this.favoritosRepository.findAll();
+        const IDUsuario = parseInt(req.query.IDUsuario);
+
+        const favoritos = await this.favoritosRepository.findAll(IDUsuario);
         res.status(200).json(favoritos);
     }
 
@@ -24,9 +26,10 @@ class FavoritosController {
 
     async removerFavorito(req, res, next) {
         const id = parseInt(req.params.id);
+        
         const favoritoRemovido = await this.favoritosRepository.delete(id);
         res.status(200).json({
-            mensagem: "Livro removido com sucesso",
+            mensagem: "Favorito removido com sucesso",
             data: favoritoRemovido
         });
     }

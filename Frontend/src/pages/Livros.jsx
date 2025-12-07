@@ -7,6 +7,7 @@ import LivroCard from '../components/LivroCard';
 import LivroForm from '../components/LivroForm';
 import './Livros.css';
 
+
 const Livros = () => {
   const [livros, setLivros] = useState([]);
   const [favoritos, setFavoritos] = useState([]);
@@ -17,11 +18,13 @@ const Livros = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const { user } = useAuth();
 
+
 useEffect(() => {
   if (!user?.id) return;
   carregarLivros();
   carregarFavoritos();
 }, [user?.id]);
+
 
   const carregarLivros = async () => {
     try {
@@ -37,6 +40,7 @@ useEffect(() => {
     }
   };
 
+
   const carregarFavoritos = async () => {
     try {
       const data = await favoritosService.listar(user.id); // ou user.IDUsuario
@@ -46,20 +50,24 @@ useEffect(() => {
     }
   };
 
+
   const handleCreate = () => {
     setEditingLivro(null);
     setShowForm(true);
   };
+
 
   const handleEdit = (livro) => {
     setEditingLivro(livro);
     setShowForm(true);
   };
 
+
   const handleDelete = async (id) => {
     if (!window.confirm('Tem certeza que deseja remover este livro?')) {
       return;
     }
+
 
     try {
       await livrosService.remover(id);
@@ -70,6 +78,7 @@ useEffect(() => {
       console.error(err);
     }
   };
+
 
   const handleSubmit = async (formData) => {
     try {
@@ -89,43 +98,54 @@ useEffect(() => {
     }
   };
 
+
   const handleCancel = () => {
     setShowForm(false);
     setEditingLivro(null);
   };
+
 
   const showSuccess = (message) => {
     setSuccessMessage(message);
     setTimeout(() => setSuccessMessage(''), 3000);
   };
 
+
   const handleToggleFavorito = async (livroId) => {
     const favoritoExistente = favoritos.find(fav => fav.IDLivro === livroId);
-    
+    console.log(favoritoExistente);
     try {
       if (favoritoExistente) {
-        // remover favorito
-        await favoritosService.deletar(favoritoExistente.id);
-        setFavoritos(prev => prev.filter(fav => fav.id !== favoritoExistente.id));
+        // ✅ JÁ EXISTE -> REMOVER
+        await favoritosService.deletar(favoritoExistente.IDFavorito);
+        //setFavoritos(prev => prev.filter(fav => fav.IDFavorito !== favoritoExistente.IDFavorito));
       } else {
-        // adicionar favorito
+        // ❌ NÃO EXISTE -> CRIAR
         const novoFavorito = await favoritosService.criar({
           IDUsuario: user.id,
           IDLivro: livroId
         });
-        setFavoritos(prev => [...prev, novoFavorito]);
+        //setFavoritos(prev => [...prev, novoFavorito]);
       }
+
+      await carregarFavoritos();
     } catch (err) {
       console.error('Erro ao alternar favorito:', err);
     }
   };
 
 
-  const isLivroFavorito = (livroId) => favoritos.some(fav => fav.IDLivro === livroId);
+
+
+  const isLivroFavorito = (livroId) => {
+    return favoritos.some(fav => fav.IDLivro === livroId);
+  }
+
 
   if (loading) {
     return <div className="loading">Carregando livros...</div>;
   }
+
 
   return (
     <div className="container">
@@ -136,13 +156,15 @@ useEffect(() => {
         </button>
       </div>
 
+
       {successMessage && (
         <div className="alert alert-success">{successMessage}</div>
       )}
-      
+     
       {error && (
         <div className="alert alert-error">{error}</div>
       )}
+
 
       {livros.length === 0 ? (
         <div className="empty-state">
@@ -166,6 +188,7 @@ useEffect(() => {
         </div>
       )}
 
+
       {showForm && (
         <LivroForm
           livro={editingLivro}
@@ -176,5 +199,6 @@ useEffect(() => {
     </div>
   );
 };
+
 
 export default Livros;

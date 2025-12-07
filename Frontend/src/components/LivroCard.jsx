@@ -3,12 +3,12 @@ import React from 'react';
 import BotaoFavorito from './BotaoFavorito';
 import './LivroCard.css';
 
-const LivroCard = ({ livro, userIsFavorito, onEdit, onDelete, onToggleFavorito }) => {
+const LivroCard = ({ livro, isFavorito, onEdit, onDelete, onToggleFavorito }) => {
   return (
     <div className="livro-card">
       <div className="favorito-wrapper">
         <BotaoFavorito 
-          isFavorito={userIsFavorito}
+          isFavorito={isFavorito}
           onClick={() => onToggleFavorito(livro.id)}
         />
       </div>
