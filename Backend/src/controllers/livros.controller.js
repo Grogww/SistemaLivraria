@@ -8,16 +8,12 @@ class LivrosController {
     async listarLivros(req, res, next) {
         try {
             const idsString = req.query.ids;
-            console.log('🔍 Backend recebeu idsString:', idsString, typeof idsString);
             
             if (idsString) {
             const idsRaw = decodeURIComponent(idsString);
-            console.log('🔍 Após decode:', idsRaw);
             
             const idsStringArray = idsRaw.split(',').map(id => id.trim());
-            console.log('🔍 Split:', idsStringArray);
             
-            // ✅ VALIDAÇÃO RIGOROSA
             const ids = [];
             for (const idStr of idsStringArray) {
                 const idNum = parseInt(idStr);
@@ -26,27 +22,20 @@ class LivrosController {
                 }
             }
             
-            console.log('🔍 IDs FINais (válidos):', ids, 'Tipo:', ids.map(i => typeof i));
-            
             if (ids.length === 0) {
-                console.log('⚠️ Nenhum ID válido');
                 return res.status(200).json([]);
             }
             
             const livros = await this.livrosRepository.findByIds(ids);
-            console.log('📚 Livros encontrados:', livros.length);
             return res.status(200).json(livros);
             }
             
             const livros = await this.livrosRepository.findAll();
             res.status(200).json(livros);
         } catch (error) {
-            console.error('❌ ERRO no controller:', error);
             next(error);
         }
     }
-
-
 
     async buscarLivroPorId(req, res, next) {
         const id = parseInt(req.params.id);
@@ -58,33 +47,59 @@ class LivrosController {
     }
 
     async criarLivro(req, res, next) {
-        const { titulo, autor, categoria, ano } = req.body;
-        const novoLivro = await this.livrosRepository.create({
-            titulo,
-            autor,
-            categoria,
-            ano: parseInt(ano)
-        });
-        res.status(201).json({
-            mensagem: "Livro criado com sucesso",
-            data: novoLivro
-        });
+        try {
+            const { titulo, autor, categoria, ano } = req.body;
+            const livroData = {
+                titulo,
+                autor,
+                categoria,
+                ano: parseInt(ano)
+            };
+
+            // Adiciona caminho da capa se arquivo foi enviado
+            if (req.file) {
+                livroData.capaPath = req.file.path.replace(/\\/g, '/'); // Normaliza para forward slash
+            }
+
+            const novoLivro = await this.livrosRepository.create(livroData);
+            res.status(201).json({
+                mensagem: "Livro criado com sucesso",
+                data: novoLivro
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 
     async atualizarLivro(req, res, next) {
-        const id = parseInt(req.params.id);
-        const { titulo, autor, categoria, ano } = req.body;
-        const livroAtualizado = await this.livrosRepository.update(id, {
-            titulo,
-            autor,
-            categoria,
-            ano: parseInt(ano)
-        });
+        try {
+            const id = parseInt(req.params.id);
+            const { titulo, autor, categoria, ano } = req.body;
+            const livroData = {
+                titulo,
+                autor,
+                categoria,
+                ano: parseInt(ano)
+            };
 
-        res.status(200).json({
-            mensagem: "Livro atualizado com sucesso",
-            data: livroAtualizado
-        });
+            // Atualiza capa se novo arquivo foi enviado
+            if (req.file) {
+                livroData.capaPath = req.file.path.replace(/\\/g, '/');
+            }
+
+            const livroAtualizado = await this.livrosRepository.update(id, livroData);
+            
+            if (!livroAtualizado) {
+                return res.status(404).json({ erro: "Livro não encontrado" });
+            }
+
+            res.status(200).json({
+                mensagem: "Livro atualizado com sucesso",
+                data: livroAtualizado
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 
     async removerLivro(req, res, next) {
@@ -95,7 +110,6 @@ class LivrosController {
             data: livroRemovido
         });
     }
-
 
 }
 

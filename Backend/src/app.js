@@ -1,4 +1,6 @@
 const app = require("./config/express");
+const express = require('express'); 
+const path = require('path'); 
 
 // Inicializa o banco de dados SQLite puro
 const db = require("./database/sqlite");
@@ -11,6 +13,9 @@ const errorHandler = require("./middlewares/errorHandler");
 
 // Configura as rotas
 app.use("/api", routes);
+
+//Servir capas para o FrontEnd
+app.use('/capas', express.static(path.join(__dirname, '../src/data/uploads/capas')));
 
 app.use(errorHandler);
 
