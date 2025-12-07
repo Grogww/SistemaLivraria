@@ -1,10 +1,17 @@
 // frontend/src/components/LivroCard.jsx
 import React from 'react';
+import BotaoFavorito from './BotaoFavorito';
 import './LivroCard.css';
 
-const LivroCard = ({ livro, onEdit, onDelete }) => {
+const LivroCard = ({ livro, userIsFavorito, onEdit, onDelete, onToggleFavorito }) => {
   return (
     <div className="livro-card">
+      <div className="favorito-wrapper">
+        <BotaoFavorito 
+          isFavorito={userIsFavorito}
+          onClick={() => onToggleFavorito(livro.id)}
+        />
+      </div>
       <h3>{livro.titulo}</h3>
       <p><strong>Autor:</strong> {livro.autor}</p>
       <p><strong>Ano:</strong> {livro.ano}</p>

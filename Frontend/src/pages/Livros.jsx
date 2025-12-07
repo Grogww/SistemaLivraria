@@ -1,21 +1,27 @@
 // frontend/src/pages/Livros.jsx
 import React, { useState, useEffect } from 'react';
 import { livrosService } from '../services/livrosService';
+import { favoritosService } from '../services/favoritosService';
+import { useAuth } from "../contexts/AuthContext";
 import LivroCard from '../components/LivroCard';
 import LivroForm from '../components/LivroForm';
 import './Livros.css';
 
 const Livros = () => {
   const [livros, setLivros] = useState([]);
+  const [favoritos, setFavoritos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingLivro, setEditingLivro] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const { user } = useAuth();
 
-  useEffect(() => {
-    carregarLivros();
-  }, []);
+useEffect(() => {
+  if (!user?.id) return;
+  carregarLivros();
+  carregarFavoritos();
+}, [user?.id]);
 
   const carregarLivros = async () => {
     try {
@@ -28,6 +34,15 @@ const Livros = () => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const carregarFavoritos = async () => {
+    try {
+      const data = await favoritosService.listar(user.id); // ou user.IDUsuario
+      setFavoritos(data); // data = lista de favoritos desse usuário
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -84,6 +99,30 @@ const Livros = () => {
     setTimeout(() => setSuccessMessage(''), 3000);
   };
 
+  const handleToggleFavorito = async (livroId) => {
+    const favoritoExistente = favoritos.find(fav => fav.IDLivro === livroId);
+    
+    try {
+      if (favoritoExistente) {
+        // remover favorito
+        await favoritosService.deletar(favoritoExistente.id);
+        setFavoritos(prev => prev.filter(fav => fav.id !== favoritoExistente.id));
+      } else {
+        // adicionar favorito
+        const novoFavorito = await favoritosService.criar({
+          IDUsuario: user.id,
+          IDLivro: livroId
+        });
+        setFavoritos(prev => [...prev, novoFavorito]);
+      }
+    } catch (err) {
+      console.error('Erro ao alternar favorito:', err);
+    }
+  };
+
+
+  const isLivroFavorito = (livroId) => favoritos.some(fav => fav.IDLivro === livroId);
+
   if (loading) {
     return <div className="loading">Carregando livros...</div>;
   }
@@ -118,8 +157,10 @@ const Livros = () => {
             <LivroCard
               key={livro.id}
               livro={livro}
+              isFavorito={isLivroFavorito(livro.id)}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onToggleFavorito={handleToggleFavorito}
             />
           ))}
         </div>
