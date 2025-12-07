@@ -25,7 +25,7 @@ function get(sql, params = []) {
 }
 
 function all(sql, params = []) {
-    return getDb().prepare(sql).all(...params);
+    return getDb().prepare(sql).all(params);
 }
 
 function query(sql, params = []) {

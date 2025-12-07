@@ -13,6 +13,24 @@ class LivrosRepository extends RepositoryBase {
         return rows.map(row => Livro.fromJSON(row));
     }
 
+    async findByIds(ids) {
+        if (!Array.isArray(ids) || ids.length === 0) return [];
+        
+        const validIds = ids.filter(id => Number.isInteger(id) && id > 0);
+        if (validIds.length === 0) return [];
+        
+        // ✅ Prepared statement - NÃO usa IN
+        let query = 'SELECT id, titulo, autor, categoria, ano FROM livros WHERE ';
+        query += validIds.map(() => 'id = ?').join(' OR ');
+        query += ' ORDER BY id ASC';
+        
+        console.log('🔍 Prepared query:', query);
+        console.log('🔍 Params:', validIds);
+        
+        const rows = db.all(query, validIds);
+        return rows.map(row => Livro.fromJSON(row));
+    }
+
     async findById(id) {
         const row = db.get("SELECT id, titulo, autor, categoria, ano FROM livros WHERE id = ?", [id]);
         return row ? Livro.fromJSON(row) : null;

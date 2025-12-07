@@ -7,6 +7,12 @@ export const livrosService = {
     return response.data;
   },
 
+  async listarPorIds(ids) {
+    const idsQuery = ids.join(',');
+    const response = await api.get(`/livros?ids=${idsQuery}`);
+    return response.data;
+  },
+
   async buscarPorId(id) {
     const response = await api.get(`/livros/${id}`);
     return response.data;
