@@ -25,6 +25,7 @@ const Header = () => {
             <>
               <Link to="/" className="nav-link">Início</Link>
               <Link to="/livros" className="nav-link">Livros</Link>
+              <Link to="/favoritos" className="nav-link">Favoritos</Link>
               <div className="user-info">
                 <span>Olá, {user.username || user.email}!</span>
                 <button onClick={handleLogout} className="btn btn-secondary">

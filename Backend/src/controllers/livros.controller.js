@@ -6,9 +6,47 @@ class LivrosController {
     }
 
     async listarLivros(req, res, next) {
-        const livros = await this.livrosRepository.findAll();
-        res.status(200).json(livros);
+        try {
+            const idsString = req.query.ids;
+            console.log('🔍 Backend recebeu idsString:', idsString, typeof idsString);
+            
+            if (idsString) {
+            const idsRaw = decodeURIComponent(idsString);
+            console.log('🔍 Após decode:', idsRaw);
+            
+            const idsStringArray = idsRaw.split(',').map(id => id.trim());
+            console.log('🔍 Split:', idsStringArray);
+            
+            // ✅ VALIDAÇÃO RIGOROSA
+            const ids = [];
+            for (const idStr of idsStringArray) {
+                const idNum = parseInt(idStr);
+                if (!isNaN(idNum) && idNum > 0) {
+                ids.push(idNum);
+                }
+            }
+            
+            console.log('🔍 IDs FINais (válidos):', ids, 'Tipo:', ids.map(i => typeof i));
+            
+            if (ids.length === 0) {
+                console.log('⚠️ Nenhum ID válido');
+                return res.status(200).json([]);
+            }
+            
+            const livros = await this.livrosRepository.findByIds(ids);
+            console.log('📚 Livros encontrados:', livros.length);
+            return res.status(200).json(livros);
+            }
+            
+            const livros = await this.livrosRepository.findAll();
+            res.status(200).json(livros);
+        } catch (error) {
+            console.error('❌ ERRO no controller:', error);
+            next(error);
+        }
     }
+
+
 
     async buscarLivroPorId(req, res, next) {
         const id = parseInt(req.params.id);
