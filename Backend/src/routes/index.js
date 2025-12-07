@@ -6,6 +6,8 @@ const router = express.Router();
 const livrosRoutes = require("./livros.routes");
 // Rotas de autenticação
 const authRoutes = require("./auth.routes");
+// Rotas de favoritos
+const favoritosRoutes = require("./favoritos.routes");
 
 // Rota inicial (explicação do sistema)
 router.get("/", (req, res) => {
@@ -18,6 +20,8 @@ router.get("/", (req, res) => {
 router.use("/livros", livrosRoutes);
 // Usa as rotas de autenticação
 router.use("/auth", authRoutes);
+// Usa as rotas de favoritos
+router.use("/favoritos", favoritosRoutes);
 
 
 module.exports = router;

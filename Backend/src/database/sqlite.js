@@ -55,11 +55,21 @@ function init() {
         )
     `);
     run(`
+        CREATE TABLE IF NOT EXISTS favoritos ( 
+        IDFavorito INTEGER PRIMARY KEY AUTOINCREMENT, 
+        IDLivro INTEGER NOT NULL, 
+        IDUsuario INTEGER NOT NULL, 
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+        FOREIGN KEY (IDLivro) REFERENCES livros(id), 
+        FOREIGN KEY (IDUsuario) REFERENCES users(id), 
+        UNIQUE(IDUsuario, IDLivro) )    
+    `);
+    run(`
         INSERT INTO livros (titulo, autor, categoria, ano)
         SELECT 'Clean Code', 'Robert C. Martin', 'Programação', 2008
         WHERE NOT EXISTS (SELECT 1 FROM livros);
     `);
-    console.log('Banco de dados SQLite inicializado (livros, users)');
+    console.log('Banco de dados SQLite inicializado (livros, users, favoritos)');
 }
 
 module.exports = { getDb, run, get, all, query, init };
