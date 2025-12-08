@@ -15,7 +15,7 @@ const errorHandler = require("./middlewares/errorHandler");
 app.use("/api", routes);
 
 //Servir capas para o FrontEnd
-app.use('/capas', express.static(path.join(__dirname, '../src/data/uploads/capas')));
+app.use('/api/capas', express.static(path.join(__dirname, '../src/data/uploads/capas')));
 
 app.use(errorHandler);
 

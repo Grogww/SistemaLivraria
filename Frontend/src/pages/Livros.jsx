@@ -31,7 +31,16 @@ useEffect(() => {
       setLoading(true);
       setError('');
       const data = await livrosService.listar();
-      setLivros(data);
+      
+      // ✅ MAPEAMENTO PARA INCLUIR IMAGEMURL
+      const livrosComImagem = data.map(livro => ({
+        ...livro,
+        imagemUrl: livro.capaPath 
+          ? `/capas/${livro.capaPath}`  // Constrói a URL completa
+          : null  // ou '/placeholder.jpg' se tiver um placeholder
+      }));
+      
+      setLivros(livrosComImagem);
     } catch (err) {
       setError('Erro ao carregar livros.');
       console.error(err);

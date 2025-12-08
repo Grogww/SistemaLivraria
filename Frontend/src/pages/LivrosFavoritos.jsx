@@ -30,13 +30,17 @@ const LivrosFavoritos = () => {
       
       if (favoritosData.length > 0) {
         const livrosIds = favoritosData.map(fav => fav.IDLivro);
-        console.log('📋 Buscando IDs:', livrosIds);
         
         const livrosData = await livrosService.listarPorIds(livrosIds);
-        console.log('📚 Livros recebidos:', livrosData);
         
-        // ✅ CORRETO: só mostra livros que vieram da API filtrada
-        setLivrosFavoritos(livrosData);
+        const livrosComImagem = livrosData.map(livro => ({
+          ...livro,
+          imagemUrl: livro.capaPath 
+            ? `/capas/${livro.capaPath}` 
+            : null
+        }));
+        
+        setLivrosFavoritos(livrosComImagem);
       } else {
         setLivrosFavoritos([]);
       }

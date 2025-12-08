@@ -18,13 +18,21 @@ export const livrosService = {
     return response.data;
   },
 
-  async criar(livro) {
-    const response = await api.post('/livros', livro);
+  async criar(formData) {
+    const response = await api.post('/livros', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response.data;
   },
 
-  async atualizar(id, livro) {
-    const response = await api.put(`/livros/${id}`, livro);
+  async atualizar(id, formData) {
+    const response = await api.put(`/livros/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response.data;
   },
 
