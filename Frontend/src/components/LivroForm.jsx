@@ -9,6 +9,10 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
     ano: '',
     editora: ''
   });
+  const [imagem, setImagem] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [erroArquivo, setErroArquivo] = useState('');
 
   useEffect(() => {
     if (livro) {
@@ -18,6 +22,15 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
         ano: livro.ano || '',
         editora: livro.editora || ''
       });
+      // Se há imagem existente, mostrar preview
+      if (livro.imagem) {
+        setPreview(livro.imagem);
+      }
+    } else {
+      // Reset ao criar novo livro
+      setFormData({ titulo: '', autor: '', ano: '', editora: '' });
+      setImagem(null);
+      setPreview(null);
     }
   }, [livro]);
 
@@ -26,9 +39,61 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleImagemChange = (e) => {
+    const arquivo = e.target.files[0];
+    setErroArquivo('');
+
+    if (!arquivo) {
+      setImagem(null);
+      setPreview(null);
+      return;
+    }
+
+    // Validação de tipo
+    if (!arquivo.type.startsWith('image/')) {
+      setErroArquivo('Apenas arquivos de imagem são permitidos');
+      e.target.value = '';
+      return;
+    }
+
+    // Validação de tamanho (máx 5MB)
+    if (arquivo.size > 5 * 1024 * 1024) {
+      setErroArquivo('O arquivo deve ter no máximo 5MB');
+      e.target.value = '';
+      return;
+    }
+
+    setImagem(arquivo);
+    setPreview(URL.createObjectURL(arquivo));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    
+    if (loading) return;
+
+    setLoading(true);
+    setErroArquivo('');
+
+    // Criar FormData
+    const formDataToSend = new FormData();
+    formDataToSend.append('titulo', formData.titulo);
+    formDataToSend.append('autor', formData.autor);
+    formDataToSend.append('ano', formData.ano);
+    formDataToSend.append('editora', formData.editora);
+    
+    if (imagem) {
+      formDataToSend.append('capaPath', imagem);
+    }
+
+    try {
+      // Chama a função onSubmit passando o FormData
+      await onSubmit(formDataToSend, livro?.id);
+    } catch (error) {
+      console.error('Erro ao enviar formulário:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,6 +110,7 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
               value={formData.titulo}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
 
@@ -57,6 +123,7 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
               value={formData.autor}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
 
@@ -71,6 +138,7 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
               required
               min="1000"
               max="9999"
+              disabled={loading}
             />
           </div>
 
@@ -82,15 +150,48 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
               name="editora"
               value={formData.editora}
               onChange={handleChange}
+              disabled={loading}
             />
           </div>
 
+          <div className="input-group">
+            <label htmlFor="imagem">Imagem da capa</label>
+            <input
+              type="file"
+              id="imagem"
+              accept="image/*"
+              onChange={handleImagemChange}
+              disabled={loading}
+            />
+            {erroArquivo && (
+              <span className="error-message">{erroArquivo}</span>
+            )}
+          </div>
+
+          {preview && (
+            <div className="input-group">
+              <label>Preview da imagem:</label>
+              <div className="image-preview">
+                <img src={preview} alt="Preview" />
+              </div>
+            </div>
+          )}
+
           <div className="form-actions">
-            <button type="button" onClick={onCancel} className="btn btn-secondary">
+            <button 
+              type="button" 
+              onClick={onCancel} 
+              className="btn btn-secondary"
+              disabled={loading}
+            >
               Cancelar
             </button>
-            <button type="submit" className="btn btn-success">
-              {livro ? 'Atualizar' : 'Criar'}
+            <button 
+              type="submit" 
+              className="btn btn-success"
+              disabled={loading}
+            >
+              {loading ? 'Enviando...' : (livro ? 'Atualizar' : 'Criar')}
             </button>
           </div>
         </form>
