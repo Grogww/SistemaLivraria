@@ -6,7 +6,6 @@ import './LivroCard.css';
 const LivroCard = ({ livro, isFavorito, onEdit, onDelete, onToggleFavorito }) => {
   const [imageError, setImageError] = useState(false);
   
-  // Fallback LOCAL - sem rede externa
   const fallbackImage = './src/assets/livro-placeholder.jpg'; 
   
   const handleImageError = useCallback(() => {

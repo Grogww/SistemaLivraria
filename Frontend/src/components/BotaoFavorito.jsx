@@ -4,7 +4,7 @@ import './BotaoFavorito.css';
 
 function BotaoFavorito({ isFavorito, onClick, disabled = false }) {
   const handleClick = (e) => {
-    e.stopPropagation(); // Impede que o clique se propague para elementos pais (ex: o card do livro)
+    e.stopPropagation(); 
     e.preventDefault();
     if (!disabled) {
       onClick();

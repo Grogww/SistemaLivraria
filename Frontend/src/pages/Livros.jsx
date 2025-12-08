@@ -32,12 +32,11 @@ useEffect(() => {
       setError('');
       const data = await livrosService.listar();
       
-      // ✅ MAPEAMENTO PARA INCLUIR IMAGEMURL
       const livrosComImagem = data.map(livro => ({
         ...livro,
         imagemUrl: livro.capaPath 
-          ? `/capas/${livro.capaPath}`  // Constrói a URL completa
-          : null  // ou '/placeholder.jpg' se tiver um placeholder
+          ? `/capas/${livro.capaPath}`  
+          : null 
       }));
       
       setLivros(livrosComImagem);
@@ -52,8 +51,8 @@ useEffect(() => {
 
   const carregarFavoritos = async () => {
     try {
-      const data = await favoritosService.listar(user.id); // ou user.IDUsuario
-      setFavoritos(data); // data = lista de favoritos desse usuário
+      const data = await favoritosService.listar(user.id); 
+      setFavoritos(data); 
     } catch (err) {
       console.error(err);
     }
@@ -124,16 +123,12 @@ useEffect(() => {
     const favoritoExistente = favoritos.find(fav => fav.IDLivro === livroId);
     try {
       if (favoritoExistente) {
-        // ✅ JÁ EXISTE -> REMOVER
         await favoritosService.deletar(favoritoExistente.IDFavorito);
-        //setFavoritos(prev => prev.filter(fav => fav.IDFavorito !== favoritoExistente.IDFavorito));
       } else {
-        // ❌ NÃO EXISTE -> CRIAR
         const novoFavorito = await favoritosService.criar({
           IDUsuario: user.id,
           IDLivro: livroId
         });
-        //setFavoritos(prev => [...prev, novoFavorito]);
       }
 
       await carregarFavoritos();

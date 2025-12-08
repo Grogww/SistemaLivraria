@@ -80,10 +80,10 @@ const LivrosFavoritos = () => {
           <LivroCard
             key={livro.id}
             livro={livro}
-            isFavorito={true}  // ✅ Mantenha - nesta página TODOS são favoritos
-            onEdit={() => {}}   // Desabilita edição
-            onDelete={() => {}} // Desabilita remoção
-            onToggleFavorito={() => {}} // Desabilita toggle
+            isFavorito={true}  
+            onEdit={() => {}}   
+            onDelete={() => {}} 
+            onToggleFavorito={() => {}} 
           />
         ))}
       </div>

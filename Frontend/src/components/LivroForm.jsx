@@ -22,12 +22,12 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
         ano: livro.ano || '',
         editora: livro.editora || ''
       });
-      // Se há imagem existente, mostrar preview
+
       if (livro.imagem) {
         setPreview(livro.imagem);
       }
     } else {
-      // Reset ao criar novo livro
+
       setFormData({ titulo: '', autor: '', ano: '', editora: '' });
       setImagem(null);
       setPreview(null);
@@ -49,15 +49,14 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
       return;
     }
 
-    // Validação de tipo
     if (!arquivo.type.startsWith('image/')) {
       setErroArquivo('Apenas arquivos de imagem são permitidos');
       e.target.value = '';
       return;
     }
 
-    // Validação de tamanho (máx 5MB)
-    if (arquivo.size > 5 * 1024 * 1024) {
+      //10mb
+    if (arquivo.size > 10 * 1024 * 1024) {
       setErroArquivo('O arquivo deve ter no máximo 5MB');
       e.target.value = '';
       return;
@@ -75,7 +74,6 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
     setLoading(true);
     setErroArquivo('');
 
-    // Criar FormData
     const formDataToSend = new FormData();
     formDataToSend.append('titulo', formData.titulo);
     formDataToSend.append('autor', formData.autor);
@@ -87,7 +85,6 @@ const LivroForm = ({ livro, onSubmit, onCancel }) => {
     }
 
     try {
-      // Chama a função onSubmit passando o FormData
       await onSubmit(formDataToSend, livro?.id);
     } catch (error) {
       console.error('Erro ao enviar formulário:', error);
