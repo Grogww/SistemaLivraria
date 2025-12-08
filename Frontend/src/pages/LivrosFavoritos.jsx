@@ -24,7 +24,6 @@ const LivrosFavoritos = () => {
       setError('');
       
       const favoritosData = await favoritosService.listar(user.id);
-      console.log('🔍 Favoritos:', favoritosData);
       
       setFavoritos(favoritosData);
       

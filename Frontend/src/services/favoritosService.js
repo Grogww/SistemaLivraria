@@ -8,7 +8,6 @@ export const favoritosService = {
   },
 
   async criar(favorito) {
-    console.log(favorito);
     const response = await api.post('/favoritos', favorito);
     return response.data;
   },

@@ -122,7 +122,6 @@ useEffect(() => {
 
   const handleToggleFavorito = async (livroId) => {
     const favoritoExistente = favoritos.find(fav => fav.IDLivro === livroId);
-    console.log(favoritoExistente);
     try {
       if (favoritoExistente) {
         // ✅ JÁ EXISTE -> REMOVER
