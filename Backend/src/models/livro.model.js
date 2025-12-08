@@ -1,11 +1,12 @@
 // src/models/livro.model.js
 class Livro {
-    constructor({ id = null, titulo, autor, categoria, ano }) {
+    constructor({ id = null, titulo, autor, categoria, ano, capaPath = null }) {
         this.id = id !== undefined ? id : null;
         this.titulo = String(titulo).trim();
         this.autor = String(autor).trim();
         this.categoria = String(categoria).trim();
         this.ano = Number.isInteger(ano) ? ano : parseInt(ano, 10);
+        this.capaPath = capaPath ? String(capaPath).trim() : null;
 
         this._validar();
     }
@@ -16,7 +17,8 @@ class Livro {
             titulo: json.titulo,
             autor: json.autor,
             categoria: json.categoria,
-            ano: json.ano
+            ano: json.ano,
+            capaPath: json.capaPath ?? null
         });
     }
 
@@ -26,7 +28,8 @@ class Livro {
             titulo: this.titulo,
             autor: this.autor,
             categoria: this.categoria,
-            ano: this.ano
+            ano: this.ano,
+            capaPath: this.capaPath
         };
     }
 

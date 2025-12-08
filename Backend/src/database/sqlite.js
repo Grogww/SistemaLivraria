@@ -42,7 +42,8 @@ function init() {
             titulo TEXT NOT NULL,
             autor TEXT NOT NULL,
             categoria TEXT NOT NULL,
-            ano INTEGER NOT NULL
+            ano INTEGER NOT NULL,
+            capaPath TEXT
         )
     `);
     run(`
@@ -65,8 +66,8 @@ function init() {
         UNIQUE(IDUsuario, IDLivro) )    
     `);
     run(`
-        INSERT INTO livros (titulo, autor, categoria, ano)
-        SELECT 'Clean Code', 'Robert C. Martin', 'Programação', 2008
+        INSERT INTO livros (titulo, autor, categoria, ano, capaPath)
+        SELECT 'Clean Code', 'Robert C. Martin', 'Programação', 2008, 'cleanCode.jpg'
         WHERE NOT EXISTS (SELECT 1 FROM livros);
     `);
     console.log('Banco de dados SQLite inicializado (livros, users, favoritos)');
