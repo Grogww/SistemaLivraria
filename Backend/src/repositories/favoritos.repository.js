@@ -20,7 +20,6 @@ class FavoritosRepository extends RepositoryBase {
 
     async create(favoritoData) {
         const novoFavorito = new Favorito({ IDFavorito: null, ...favoritoData });
-        console.log(novoFavorito);
         const result = db.run(
             "INSERT INTO Favoritos (IDLivro, IDUsuario) VALUES (?, ?)",
             [novoFavorito.IDLivro, novoFavorito.IDUsuario]

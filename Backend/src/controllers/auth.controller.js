@@ -22,7 +22,6 @@ class AuthController {
     async login(req, res, next) {
         try {
             const { email, password } = req.body;
-            console.log(req.body);
             if (!email || !password) { const e = new Error('Credenciais inválidas'); e.statusCode = 400; throw e; }
             const row = await this.usersRepository.findByEmail(email);
             if (!row || !(await bcrypt.compare(String(password), row.password_hash))) {

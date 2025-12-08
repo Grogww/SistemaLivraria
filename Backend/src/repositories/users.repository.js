@@ -16,7 +16,6 @@ class UsersRepository {
     }
     async create({ username, email, passwordHash }) {
         const result = await db.run('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)', [username, email, passwordHash]);
-        console.log(result);
 
         const row = await db.get('SELECT id, username, created_at FROM users WHERE id = ?', [result.lastInsertRowid]);
         return User.fromDB(row);

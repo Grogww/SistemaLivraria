@@ -23,9 +23,6 @@ class LivrosRepository extends RepositoryBase {
         query += validIds.map(() => 'id = ?').join(' OR ');
         query += ' ORDER BY id ASC';
         
-        console.log('🔍 Prepared query:', query);
-        console.log('🔍 Params:', validIds);
-        
         const rows = db.all(query, validIds);
         return rows.map(row => Livro.fromJSON(row));
     }

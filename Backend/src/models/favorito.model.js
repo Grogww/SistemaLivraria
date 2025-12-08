@@ -1,8 +1,6 @@
 // src/models/favorito.model.js
 class Favorito {
     constructor({ IDFavorito = null, IDLivro, IDUsuario, created_at = null }) {
-        console.log(IDLivro, IDUsuario);
-
         this.IDFavorito = IDFavorito !== undefined ? IDFavorito : null;
         this.IDLivro = Number(IDLivro);
         this.IDUsuario = Number(IDUsuario);
@@ -42,7 +40,6 @@ class Favorito {
 
         
         if (erros.length > 0) {
-            console.log(erros);
             const error = new Error("Dados inválidos");
             error.statusCode = 400;
             error.details = erros;
