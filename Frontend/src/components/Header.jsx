@@ -1,19 +1,21 @@
 // frontend/src/components/Header.jsx
-import React from 'react';
+import React, { useContext } from 'react'; 
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { ThemeContext } from '../contexts/ThemeContext';
 import './Header.css';
 
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { darkMode, toggleDarkMode } = useContext(ThemeContext);
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
 
-  return (
+    return (
     <header className="header">
       <div className="container header-content">
         <Link to="/" className="logo">
@@ -26,6 +28,17 @@ const Header = () => {
               <Link to="/" className="nav-link">Início</Link>
               <Link to="/livros" className="nav-link">Livros</Link>
               <Link to="/favoritos" className="nav-link">Favoritos</Link>
+              
+              {/* Botão Toggle Tema */}
+              <button 
+                className="theme-toggle btn"
+                onClick={toggleDarkMode}
+                title={darkMode ? "Alternar para tema claro" : "Alternar para tema escuro"}
+                aria-label="Alternar tema"
+              >
+                {darkMode ? '☀️' : '🌙'}
+              </button>
+              
               <div className="user-info">
                 <span>Olá, {user.username || user.email}!</span>
                 <button onClick={handleLogout} className="btn btn-secondary">
@@ -37,6 +50,15 @@ const Header = () => {
             <>
               <Link to="/login" className="nav-link">Login</Link>
               <Link to="/register" className="nav-link">Registrar</Link>
+              
+              {/* Botão Toggle também para usuários não logados */}
+              <button 
+                className="theme-toggle btn"
+                onClick={toggleDarkMode}
+                title={darkMode ? "Alternar para tema claro" : "Alternar para tema escuro"}
+              >
+                {darkMode ? '☀️' : '🌙'}
+              </button>
             </>
           )}
         </nav>

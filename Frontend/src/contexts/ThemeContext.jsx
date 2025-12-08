@@ -1,28 +1,19 @@
-import { createContext, useState, useEffect } from "react";
-
+import { createContext, useState, useEffect } from 'react';
 export const ThemeContext = createContext();
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState("light");
-
-  // Carregar tema salvo no localStorage (opcional, mas recomendado)
+export const ThemeProvider = ({ children }) => {
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('dark-mode') === 'true');
+  
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved) setTheme(saved);
-  }, []);
+    localStorage.setItem('dark-mode', darkMode);
+    document.body.classList.toggle('dark-mode', darkMode);
+  }, [darkMode]);
 
-  // Aplicar classe no body quando mudar
-  useEffect(() => {
-    document.body.className = theme;
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () =>
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  const toggleDarkMode = () => setDarkMode(prev => !prev);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );
-}
+};
