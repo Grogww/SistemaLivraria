@@ -9,6 +9,7 @@
 .livros-header h1 {
   margin: 0;
   font-size: 28px;
+  color: var(--text-color);
 }
 
 .livros-grid {
@@ -21,13 +22,14 @@
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  background: white;
+  background: var(--bg-color);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 1px solid var(--border-color);
 }
 
 .empty-state p {
   font-size: 18px;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 20px;
 }

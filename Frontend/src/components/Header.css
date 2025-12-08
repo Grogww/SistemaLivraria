@@ -1,8 +1,9 @@
 /* frontend/src/components/Header.css */
 .header {
-  background-color: #fff;
+  background-color: var(--bg-color);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .header-content {
@@ -16,7 +17,7 @@
 
 .logo {
   text-decoration: none;
-  color: #333;
+  color: var(--text-color);
 }
 
 .logo h1 {
@@ -32,13 +33,13 @@
 
 .nav-link {
   text-decoration: none;
-  color: #333;
+  color: var(--text-color);
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-  color: #007bff;
+  color: var(--btn-primary);
 }
 
 .user-info {
@@ -48,6 +49,6 @@
 }
 
 .user-info span {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 14px;
 }

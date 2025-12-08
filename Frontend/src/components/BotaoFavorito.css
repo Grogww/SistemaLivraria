@@ -1,11 +1,18 @@
 .botao-favorito {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    font-size: 1.5rem; /* Tamanho do ícone */
-    line-height: 1;
-    color: gold;
-    display: inline-flex;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--btn-warning);
+  display: inline-flex;
 }
 
+.botao-favorito.favoritado {
+  color: var(--btn-warning);
+}
+
+.botao-favorito:not(.favoritado) {
+  color: var(--text-secondary);
+}

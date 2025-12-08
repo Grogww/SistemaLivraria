@@ -13,18 +13,21 @@
 }
 
 .livro-form-container {
-  background: white;
+  background: var(--bg-color);
   padding: 30px;
   border-radius: 8px;
   width: 90%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .livro-form-container h2 {
   margin: 0 0 20px 0;
   text-align: center;
+  color: var(--text-color);
 }
 
 .form-actions {
